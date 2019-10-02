@@ -1,10 +1,14 @@
 from pythonosc import dispatcher, osc_server
-import argparse, os, time, sys
+import argparse
+import os
+import sys
+import time
+
 
 class Headband:
-    def __init__(self, ip = "127.0.0.1", port = 5000):
+    def __init__(self, ip="127.0.0.1", port=5000):
         # connection variables
-        self.connection_status = [4,4,4,4]
+        self.connection_status = [4, 4, 4, 4]
         self.connection_notified = False
 
         # brainwaves lists
@@ -23,7 +27,6 @@ class Headband:
         self.ip = ip
         self.port = port
         self.server = self.create_server(self.ip, self.port)
-
 
     def start_server(self):
         """ starts an osc server """
@@ -53,7 +56,7 @@ class Headband:
         print("Program End")
         pass
 
-    def round_values(self, ls, dp = 5):
+    def round_values(self, ls, dp=5):
         for val in ls:
             val = round(val, dp)
         return ls
@@ -79,18 +82,23 @@ class Headband:
     def theta_abs_handler(self, addr, args, TP9, Fp1, Fp2, TP10):
         if self.check_connection():
             self.brainwave_theta = self.round_values([TP9, Fp1, Fp2, TP10])
+
     def delta_abs_handler(self, addr, args, TP9, Fp1, Fp2, TP10):
         if self.check_connection():
             self.brainwave_delta = self.round_values([TP9, Fp1, Fp2, TP10])
+
     def alpha_abs_handler(self, addr, args, TP9, Fp1, Fp2, TP10):
         if self.check_connection():
             self.brainwave_alpha = self.round_values([TP9, Fp1, Fp2, TP10])
+
     def beta_abs_handler(self, addr, args, TP9, Fp1, Fp2, TP10):
         if self.check_connection():
             self.brainwave_beta = self.round_values([TP9, Fp1, Fp2, TP10])
+
     def gamma_abs_handler(self, addr, args, TP9, Fp1, Fp2, TP10):
         if self.check_connection():
             self.brainwave_gamma = self.round_values([TP9, Fp1, Fp2, TP10])
+
     def brainwave_raw_handler(self, addr, *args):
         if self.check_connection():
             self.brainwave_raw = self.round_values(args[1:])
@@ -103,19 +111,18 @@ class Headband:
             else:
                 sys.exit(0)
 
-    def get_brainwaves(self, rounded = 3):
+    def get_brainwaves(self, rounded=3):
         # values are updated at 10hz
         # create a dictionary
         brainwaves_levels = {
-            "alpha":self.brainwave_alpha,
-            "theta":self.brainwave_theta,
-            "delta":self.brainwave_delta,
-            "beta":self.brainwave_beta,
-            "gamma":self.brainwave_gamma}
-        ]
+            "alpha": self.brainwave_alpha,
+            "theta": self.brainwave_theta,
+            "delta": self.brainwave_delta,
+            "beta": self.brainwave_beta,
+            "gamma": self.brainwave_gamma}
         return brainwaves_levels
 
-    def get_raw_brainwaves(self, rounded = 3):
+    def get_raw_brainwaves(self, rounded=3):
         # values are updated at 256hz
         return [round(e, rounded) for e in self.brainwave_raw]
 
@@ -130,15 +137,37 @@ class Headband:
                             default=port,
                             help="The port to listen on")
         args = parser.parse_args()
+
         # map information to listen for
         dp = dispatcher.Dispatcher()
-        dp.map("/muse/elements/horseshoe", self.connection_handler, "connection")
-        dp.map("/muse/eeg", self.brainwave_raw_handler, "eeg")
-        dp.map("/muse/elements/theta_absolute", self.theta_abs_handler, "theta_absolute")
-        dp.map("/muse/elements/delta_absolute", self.delta_abs_handler, "delta_absolute")
-        dp.map("/muse/elements/alpha_absolute", self.alpha_abs_handler, "alpha_absolute")
-        dp.map("/muse/elements/beta_absolute", self.beta_abs_handler, "beta_absolute")
-        dp.map("/muse/elements/gamma_absolute", self.gamma_abs_handler, "gamma_absolute")
+        dp.map("/muse/elements/horseshoe",
+               self.connection_handler,
+               "connection")
+
+        dp.map("/muse/eeg",
+               self.brainwave_raw_handler,
+               "eeg")
+
+        dp.map("/muse/elements/theta_absolute",
+               self.theta_abs_handler,
+               "theta_absolute")
+
+        dp.map("/muse/elements/delta_absolute",
+               self.delta_abs_handler,
+               "delta_absolute")
+
+        dp.map("/muse/elements/alpha_absolute",
+               self.alpha_abs_handler,
+               "alpha_absolute")
+
+        dp.map("/muse/elements/beta_absolute",
+               self.beta_abs_handler,
+               "beta_absolute")
+
+        dp.map("/muse/elements/gamma_absolute",
+               self.gamma_abs_handler,
+               "gamma_absolute")
+
         # create the server
         return osc_server.ThreadingOSCUDPServer((args.ip, args.port), dp)
 
