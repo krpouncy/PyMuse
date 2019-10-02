@@ -49,8 +49,8 @@ class Headband:
 
     def run(self):
         """ a method that updates at 256hz """
-        print(self.get_derivative_brainwaves())
-        print(self.get_raw_brainwaves())
+        print(self.get_brainwaves())
+        # print(self.get_raw_brainwaves())
 
     def exit_handler(self):
         print("Program End")
@@ -172,5 +172,7 @@ class Headband:
         return osc_server.ThreadingOSCUDPServer((args.ip, args.port), dp)
 
 if __name__ == "__main__":
-    headband = Headband()
+    ip = input("Enter Computer IP Address: ")
+    print("default port set to 5000")
+    headband = Headband(ip = ip)
     headband.start_server()
