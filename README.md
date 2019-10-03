@@ -52,7 +52,7 @@ class MindReader(PyMuse.Headband):
     theta_brainwaves = brainwaves["theta"]
     
     average = lambda x: sum(x)/len(x)
-    if average(alpha_brainwaves) < average(theta_brainwaves):
+    if average(alpha_brainwaves) > average(theta_brainwaves):
       print("More Alpha than Theta")
 
 # Start the server
