@@ -22,9 +22,20 @@ headband = PyMuse.Headband()
 headband.start_server()
 ```
 ### Setting the Server IP Address and Port Number
+#### Method 1:
 ```python
 headband = PyMuse.Headband(ip = "192.168.0.42", port = 8000)
 ```
+#### Method 2:
+```python
+class MindReader(QObject, PyMuse.Headband):
+  def run(self):
+    pass
+    
+headband = MindReader()
+headband.setServerInfo("192.168.0.42", 8000)
+```
+
 ### Getting Derivative Brainwaves
 ```python
 import PyMuse
@@ -32,7 +43,7 @@ import PyMuse
 # Create a child class
 class MindReader(PyMuse.Headband):
   def run(self):
-  """ this method updates at 256hz """
+  """ this method updates at 10hz """
     brainwaves = self.get_brainwaves()
     alpha_brainwaves = brainwaves["alpha"]
     theta_brainwaves = brainwaves["theta"]
@@ -42,7 +53,8 @@ class MindReader(PyMuse.Headband):
       print("More Alpha than Theta")
 
 # Start the server
-headband = MindReader(ip = "192.168.0.42", port = 8000)
+headband = MindReader()
+headband.setServerInfo("127.0.0.1", 5000)
 headband.start_server()
 ```
 ### Getting Raw Brainwaves
