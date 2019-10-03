@@ -26,9 +26,12 @@ headband.start_server()
 ```python
 headband = PyMuse.Headband(ip = "192.168.0.42", port = 8000)
 ```
-#### Method 2:
+#### Method 2: (when multithreading)
 ```python
 class MindReader(QObject, PyMuse.Headband):
+  def __init__(self)
+    super().__init__()
+    
   def run(self):
     pass
     
@@ -54,7 +57,7 @@ class MindReader(PyMuse.Headband):
 
 # Start the server
 headband = MindReader()
-headband.setServerInfo("127.0.0.1", 5000)
+headband = MindReader(ip = "192.168.0.42", port = 8000)
 headband.start_server()
 ```
 ### Getting Raw Brainwaves
