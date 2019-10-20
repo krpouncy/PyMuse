@@ -26,7 +26,7 @@ headband.start_server()
 ```python
 headband = PyMuse.Headband(ip = "192.168.0.42", port = 8000)
 ```
-#### Method 2: (when inheriting multiple classes)
+#### (when inheriting multiple classes)
 ```python
 class MindReader(QObject, PyMuse.Headband):
   def __init__(self, **kwargs)
@@ -39,7 +39,7 @@ class MindReader(QObject, PyMuse.Headband):
 
 headband = MindReader(ip = "192.168.0.42", port = 8000)
 ```
-#### Method 3:
+#### Method 2:
 ```python
 headband = PyMuse.Headband()
 headband.setServerInfo("192.168.0.12", 5000)
