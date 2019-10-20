@@ -15,7 +15,7 @@ logger = logging.getLogger()
 
 
 class Headband:
-    def __init__(self, ip="127.0.0.1", port=5000):
+    def __init__(self, **kwargs):
         # connection variables
         self.connection_status = [4, 4, 4, 4]
         self.connection_notified = False
@@ -29,9 +29,17 @@ class Headband:
         # brainwave eeg
         self.brainwave_raw = []
 
-        # create the server
-        self.ip = ip
-        self.port = port
+        # set the default server info
+        if "ip" in kwargs.keys():
+            self.ip = kwargs['ip']
+        else:
+            self.ip = "127.0.0.1"
+
+        if "port" in kwargs.keys():
+            self.port = kwargs['port']
+        else:
+            self.port = 5000
+
         self.server = self.create_server(self.ip, self.port)
 
     def setServerInfo(self, ip, port):

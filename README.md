@@ -3,7 +3,7 @@ A way to connect to the Muse Headset via the Muse Monitor
 ### Windows Python Only :(
 
 # Getting Connected
-### 1. Connect your headband to the Muse Monitor App 
+### 1. Connect your headband to the Muse Monitor App
 [[Android](https://play.google.com/store/apps/details?id=com.sonicPenguins.museMonitor)][[Apple](https://apps.apple.com/us/app/muse-monitor/id988527143
 )]
 ### 2. Check the Muse Monitor Settings
@@ -26,17 +26,23 @@ headband.start_server()
 ```python
 headband = PyMuse.Headband(ip = "192.168.0.42", port = 8000)
 ```
-#### Method 2: (when multithreading)
+#### Method 2: (when inheriting multiple classes)
 ```python
 class MindReader(QObject, PyMuse.Headband):
-  def __init__(self)
-    super().__init__()
-    
+  def __init__(self, **kwargs)
+    # call the __init__ of parent classes
+    QObject.__init__(self)
+    PyMuse.Headband.__init__(self, **kwargs)
+
   def run(self):
     pass
-    
-headband = MindReader()
-headband.setServerInfo("192.168.0.42", 8000)
+
+headband = MindReader(ip = "192.168.0.42", port = 8000)
+```
+#### Method 3:
+```python
+headband = PyMuse.Headband()
+headband.setServerInfo("192.168.0.12", 5000)
 ```
 
 ### Getting Derivative Brainwaves
@@ -50,13 +56,12 @@ class MindReader(PyMuse.Headband):
     brainwaves = self.get_brainwaves()
     alpha_brainwaves = brainwaves["alpha"]
     theta_brainwaves = brainwaves["theta"]
-    
+
     average = lambda x: sum(x)/len(x)
     if average(alpha_brainwaves) > average(theta_brainwaves):
       print("More Alpha than Theta")
 
 # Start the server
-headband = MindReader()
 headband = MindReader(ip = "192.168.0.42", port = 8000)
 headband.start_server()
 ```

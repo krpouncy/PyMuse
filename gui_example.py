@@ -87,9 +87,10 @@ class BrainReader(QObject, PyMuse.Headband):
     # create label variables
     brainwave_labels = {}
 
-    def __init__(self):
-        # call the __init__ of QObject
-        super().__init__()
+    def __init__(self, **kwargs):
+        # call the __init__ of parent classes
+        QObject.__init__(self)
+        PyMuse.Headband.__init__(self, **kwargs)
 
     def run(self):
         brainwaves = self.get_brainwaves()
@@ -105,10 +106,9 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainprogram = MainProgram()
 
-    brainreader = BrainReader()
     ip = input("[~] Enter computer IP address:")
-    brainreader.setServerInfo(ip, 5000)
-    print("[!] Server Information Set")
+    brainreader = BrainReader(ip = ip, port = 5000)
+    print("[!] ip and port set.. ready")
 
     # create the thread
     objThread = QThread()
